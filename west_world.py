@@ -3,7 +3,7 @@ import time
 import states
 
 
-class BaseGameEntity(object):
+class BaseGameEntity:
     id = 0
 
     def __init__(self):
@@ -54,7 +54,6 @@ class Miner(BaseGameEntity):
         else:
             return False
         
-
 
 if __name__ == '__main__':
     real_miner = Miner('Bob',

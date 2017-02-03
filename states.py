@@ -66,15 +66,13 @@ class GoHomeAndSleepTillRested(State):
             miner.change_state(enter_mine_and_dig_for_nugget)
 
     def exit(self, miner):
-        print("Miner {}:Another day, another nugget!".format(miner.name))
+        print("Miner {}: Another day, another nugget!".format(miner.name))
         
-        
-
 
 class QuenchThirst(State):
     def enter(self, miner):
         if miner.location != 'saloon':
-            print("Miner {}: so thirsty! Ima go get me cold one".format(miner.name))
+            print("Miner {}: So thirsty! Ima go get me cold one".format(miner.name))
             miner.location = 'saloon'
 
     def execute(self, miner):
@@ -90,10 +88,6 @@ class QuenchThirst(State):
     def exit(self, miner):
         print("Miner {}: Gotta Get back to it!".format(miner.name))
         
-        
-
-    
-
 
 enter_mine_and_dig_for_nugget = EnterMineAndDigForNugget()
 visit_bank_and_deposit_gold = VisitBankAndDepositGold()
