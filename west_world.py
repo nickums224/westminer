@@ -3,7 +3,7 @@ import time
 import states
 
 
-class BaseGameEntity:
+class BaseGameEntity(object):
     id = 0
 
     def __init__(self):
@@ -47,6 +47,13 @@ class Miner(BaseGameEntity):
             return True
         else:
             return False
+
+    def is_tired(self):
+        if self.fatigue > 10:
+            return True
+        else:
+            return False
+        
 
 
 if __name__ == '__main__':
