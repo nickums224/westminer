@@ -1,7 +1,7 @@
 # **The West World Project**
-## A State Machine Based on an Example From **Programming Game AI by Example*** by Mat Buckland
+## A State Machine Based on an Example From **Programming Game AI by Example** by Mat Buckland
 
-This is an expansion of a concept for a state machine in Mat Buckland's Book **Programming Game AI by Example*** which
+This is an expansion of a concept for a state machine in Mat Buckland's Book **Programming Game AI by Example** which
 is called **The West World Project**.
 
 In its most basic form, which we have translated from C++, a describes Gold Mining AI named Bob alternates between four states 
