@@ -26,6 +26,8 @@ class Miner(BaseGameEntity):
         self.thirst = thirst
         self.fatigue = fatigue
         self.max_nuggets = 5
+        self.status = 'free'
+        self.counter_jail = 0
 
     def update(self):
         self.thirst += 1
@@ -43,7 +45,7 @@ class Miner(BaseGameEntity):
             return False
 
     def thirsty(self):
-        if self.thirst > 5:
+        if self.thirst > 10:
             return True
         else:
             return False
@@ -71,7 +73,7 @@ if __name__ == '__main__':
                        0,
                        0)
 
-    game_objects = [real_miner, other_miner]
+    game_objects = [real_miner]
     counter = 0
     while counter < 50:
         print("Game tick {}".format(counter))

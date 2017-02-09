@@ -1,5 +1,6 @@
 import random
 
+
 class State:
     def enter(self):
         raise NotImplementedError
@@ -41,9 +42,9 @@ class EnterMineAndDigForNugget(State):
             print("Miner {}: NO NUGGETS!? I'm gonna be here all day at this rate".format(miner.name))
 
         if miner.pockets_full():
-              miner.change_state(visit_bank_and_deposit_gold)
+            miner.change_state(visit_bank_and_deposit_gold)
         elif miner.thirsty():
-              miner.change_state(quench_thirst)
+            miner.change_state(quench_thirst)
 
     def exit(self, miner):
         print("Miner {}: Ah'm leavin' the gold mine with mah pockets full o'sweet gold".format(miner.name))
@@ -58,11 +59,13 @@ class VisitBankAndDepositGold(State):
     def execute(self, miner):
         miner.gold_bank += miner.gold_carried
         miner.gold_carried = 0
-        print("Miner {}: Depostin' gold. Total savings now: {}".format(miner.name,
+        print("Miner {}: Depositin' gold. Total savings now: {}".format(miner.name,
                                                                        miner.gold_bank))
-        if miner.gold_bank > 4:
+        if miner.gold_bank > 10:
             print("Miner {}: Woohoo! Rich enough for now. Back home to mah li'l lady".format(miner.name))
             miner.change_state(go_home_and_sleep_till_rested)
+        elif miner.thirsty():
+            miner.change_state(quench_thirst)
         else:
             miner.change_state(enter_mine_and_dig_for_nugget)
 
@@ -81,41 +84,68 @@ class GoHomeAndSleepTillRested(State):
         miner.thirst += 1
         if miner.is_tired():
             miner.change_state(go_home_and_sleep_till_rested)
-            print("Miner {}: Just 5 more minutes...".format(miner.name)) #new dialogue
-        if miner.thirsty():
-            miner.change_state(quench_thirst) #changed from 'go_home_and_sleep_till_rested' to 'quench_thirst'.
+            print("Miner {}: Just 5 more minutes...".format(miner.name))
+            miner.change_state(quench_thirst)
         else:
             miner.change_state(enter_mine_and_dig_for_nugget)
 
     def exit(self, miner):
-        print("Miner {}: Good mornin'! Another day, another nugget!".format(miner.name)) #updated miner exit dialogue
+        print("Miner {}: Good mornin'! Another day, another nugget!".format(miner.name))
         
 
 class QuenchThirst(State):
     def enter(self, miner):
         if miner.location != 'saloon':
-            print("Miner {}: So thirsty! Ima go get me cold one".format(miner.name))
+            print("Miner {}: So thirsty! I'ma go get me a cold one".format(miner.name))
             miner.location = 'saloon'
 
     def execute(self, miner):
-        miner.fatigue += 1
-        miner.thirst -= 3
-        print("Miner {}: That's some fine sippin' liquor.".format(miner.name))
-        if miner.thirsty():
-            miner.change_state(quench_thirst)
-        if miner.pockets_full():
-            miner.change_state(visit_bank_and_deposit_gold)
-        if miner.is_tired():
-            miner.change_state(go_home_and_sleep_till_rested)
+        if miner.gold_carried == 0:
+            print("Barkeep: You dirty bum, I'm callin' the sheriff!")
+            miner.status = 'arrested'
+            miner.change_state(jail)
         else:
-            print("Miner {}: Whew! That really wet my wistle".format(miner.name))
-            miner.change_state(enter_mine_and_dig_for_nugget) #changed visit_bank_and_deposit_gold to enter_mine_and_dig_for_nugget
+            print("Miner {}: That's some fine sippin' liquer.".format(miner.name))
+            miner.fatigue += 1
+            miner.thirst = 0
+            miner.gold_carried -= 1
+            print("Miner {}: Whew! That really wet my whistle".format(miner.name))
+
+            if miner.is_tired():
+                miner.change_state(go_home_and_sleep_till_rested)
+            elif miner.pockets_full():
+                miner.change_state(visit_bank_and_deposit_gold)
+            else:
+                miner.change_state(enter_mine_and_dig_for_nugget)
 
     def exit(self, miner):
-        print("Miner {}: Gotta Get back to it!".format(miner.name))
-        
+        if miner.status == 'arrested':
+            print("Miner {}: You'll never catch me!".format(miner.name))
+        else:
+            print("Miner {}: Gotta Get back to it!".format(miner.name))
+
+
+class Jail(State):
+    def enter(self, miner):
+        if miner.location != 'jail':
+            print("Miner {}: Mama always said I'd end up here".format(miner.name))
+            miner.location = 'jail'
+
+    def execute(self, miner):
+        miner.fatigue = 0
+        miner.thirst = 0
+        print("Miner {}: Sittin' in jail".format(miner.name))
+        miner.counter_jail += 1
+        if miner.counter_jail >= 3:
+            miner.change_state(enter_mine_and_dig_for_nugget)
+
+    def exit(self, miner):
+        miner.counter_jail = 0
+        miner.status = 'free'
+        print("Miner {}: I'm bustin' outta this joint!".format(miner.name))
 
 enter_mine_and_dig_for_nugget = EnterMineAndDigForNugget()
 visit_bank_and_deposit_gold = VisitBankAndDepositGold()
 go_home_and_sleep_till_rested = GoHomeAndSleepTillRested()
 quench_thirst = QuenchThirst()
+jail = Jail()
