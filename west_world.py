@@ -3,6 +3,7 @@ import time
 import states
 import items
 
+
 class BaseGameEntity:
     id = 0
 
@@ -79,13 +80,13 @@ if __name__ == '__main__':
                        "bulky",
                        items.small_pickax)
     other_miner = Miner('Sam',
-                       states.enter_mine_and_dig_for_nugget,
-                       'home',
-                       1,
-                       10,
-                       0,
-                       0,
-                       "lanky",
+                        states.enter_mine_and_dig_for_nugget,
+                        'home',
+                        1,
+                        10,
+                        0,
+                        0,
+                        "lanky",
                         items.small_pickax)
 
     game_objects = [real_miner]

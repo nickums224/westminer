@@ -2,6 +2,7 @@ import random
 
 import items
 
+
 class State:
     def enter(self):
         raise NotImplementedError
@@ -161,12 +162,12 @@ class Jail(State):
         print("Miner {}: Gotta Get back to it!".format(miner.name))
 
 class GoShopping(State):
-    def enter(self,miner):
+    def enter(self, miner):
         if miner.location != "shop":
             print("Miner {}: Woohoo time to go shoppin' for a new pickax!".format(miner.name))
             miner.location = "shop"
 
-    def execute(self,miner):
+    def execute(self, miner):
         miner.fatigue += 1
         print("Miner {}: Let's see which one should ah' choose?".format(miner.name))
         if miner.gold_bank >= 10:
@@ -186,7 +187,7 @@ class GoShopping(State):
         else:
             miner.change_state(enter_mine_and_dig_for_nugget)
 
-    def exit(self,miner):
+    def exit(self, miner):
         print("Miner {}: Can't wait to try out my new {}".format(miner.name, miner.pickax.name))
 
 
