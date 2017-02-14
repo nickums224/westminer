@@ -49,6 +49,10 @@ class EnterMineAndDigForNugget(State):
         elif miner.thirsty():
             miner.change_state(quench_thirst)
 
+        if miner.thirst >= 2:
+            miner.health - 30
+
+
     def exit(self, miner):
         print("Miner {}: Ah'm leavin' the gold mine with mah pockets full o'sweet gold".format(miner.name))
 

@@ -45,6 +45,9 @@ class Miner(BaseGameEntity):
         self.thirst += 1
         self.current_state.execute(self)
 
+
+
+
     def change_state(self, new_state):
         self.current_state.exit(self)
         self.current_state = new_state
@@ -80,6 +83,7 @@ class Wife(BaseGameEntity):
         self.shirts_ironed=shirts_ironed
         self.cups_made = cups_made
         self.max_cups = 2
+        self.health =  100
 
     def update(self):
         self.fatigue+=1
@@ -110,7 +114,7 @@ if __name__ == '__main__':
                        0,
                        0,
                        0,
-                       "bulky",
+                       "lanky",
                        items.small_pickax)
     other_miner = Miner('Sam',
                         states.enter_mine_and_dig_for_nugget,
@@ -119,7 +123,7 @@ if __name__ == '__main__':
                         10,
                         0,
                         0,
-                        "lanky",
+                        "bulky",
                         items.small_pickax)
 
     miner_wife = Wife('Deloris',
@@ -135,6 +139,9 @@ if __name__ == '__main__':
     while counter < 50:
         print("Game tick {}".format(counter))
         for obj in game_objects:
+            if obj.health <=0:
+                print("Miner {}: Imma dead as a doorknob!".format(obj.name))
+                break
             obj.update()
         time.sleep(0.5)
         counter += 1
