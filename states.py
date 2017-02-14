@@ -190,6 +190,54 @@ class GoShopping(State):
     def exit(self, miner):
         print("Miner {}: Can't wait to try out my new {}".format(miner.name, miner.pickax.name))
 
+class WakeUpAndMakeCoffee(State):
+    def enter(self, wife):
+        if wife.location != 'home':
+            print("{}: Gotta head home and make some coffee for my ol' man.".format(wife.name))
+            wife.location = 'home'
+
+    def execute(self, wife):
+        wife.fatigue += 1
+        print ("{}: Coffee keeps me goin' fer my chores.".format(wife.name))
+        if wife.coffee_made():
+            wife.wife_change_state(wash_bfast_dishes)
+        if wife.tired():
+            wife.wife_change_state(wife_nap)
+
+    def exit(self, wife):
+        print("{}: That was some delicious breakfast!".format(wife.name))
+
+class WashBfastDishes(State):
+
+    def enter(self, wife):
+        print("{}: I tell ya, I made a mess!".format(wife.name))
+        wife.location = 'home'
+
+    def execute(self, wife):
+        wife.fatigue += 1
+        print ("{}: I don't mind washin' these here dishes, anything for my fella.".format(wife.name))
+        if wife.dishes_washed():
+            wife.wife_change_state(iron_shirts)
+        if wife.fatigue():
+            wife.wife_change_state(wife_nap)
+
+    def exit(self, wife):
+        print("{}: Ah, ain't nothin' better than a clean kitchen".format(wife.name))
+
+class WifeNap(State):
+
+    def enter(self, wife):
+        print("{}: Whew, keepin' up a house is hard work!".format(wife.name))
+        wife.location = 'home'
+
+    def execute(self, wife):
+        wife.fatigue -= 0
+        if wife.fatigue > 7:
+            print("{}: ...zzz...".format(wife.name))
+            wife.wife_change_state(wake_up_and_make_coffee)
+
+    def exit(self, wife):
+        pass
 
 enter_mine_and_dig_for_nugget = EnterMineAndDigForNugget()
 visit_bank_and_deposit_gold = VisitBankAndDepositGold()
@@ -197,3 +245,6 @@ go_home_and_sleep_till_rested = GoHomeAndSleepTillRested()
 quench_thirst = QuenchThirst()
 jail = Jail()
 go_shopping = GoShopping()
+wake_up_and_make_coffee = WakeUpAndMakeCoffee()
+wash_bfast_dishes = WashBfastDishes()
+wife_nap = WifeNap()

@@ -39,7 +39,7 @@ class Miner(BaseGameEntity):
             self.strength = 5 + self.pickax.strength
         if build == "bulky":
             self.health = 70
-            self. strength = 7 + self.pickax.strength
+            self.strength = 7 + self.pickax.strength
 
     def update(self):
         self.thirst += 1
@@ -67,7 +67,40 @@ class Miner(BaseGameEntity):
             return True
         else:
             return False
-        
+
+class Wife(BaseGameEntity):
+
+    def __init__(self, name, wife_state, location, fatigue, dishes_washed, shirts_ironed, cups_made):
+        super(Wife, self).__init__()
+        self.name=name
+        self.wife_state=wife_state
+        self.location=location
+        self.fatigue=fatigue
+        self.dishes_washed=dishes_washed
+        self.shirts_ironed=shirts_ironed
+        self.cups_made = cups_made
+        self.max_cups = 2
+
+    def update(self):
+        self.fatigue+=1
+        self.wife_state.execute(self)
+
+    def wife_change_state(self, new_state):
+        self.wife_state.exit(self)
+        self.wife_state=new_state
+        self.wife_state.enter(self)
+
+    def tired(self):
+        if self.fatigue > 4:
+            return True
+        else:
+            return False
+
+    def coffee_made(self):
+        if self.cups_made == self.max_cups:
+            return True
+        else:
+            return False
 
 if __name__ == '__main__':
     real_miner = Miner('Bob',
@@ -89,7 +122,15 @@ if __name__ == '__main__':
                         "lanky",
                         items.small_pickax)
 
-    game_objects = [real_miner]
+    miner_wife = Wife('Deloris',
+                      states.wake_up_and_make_coffee,
+                      'home',
+                      0,
+                      0,
+                      0,
+                      0)
+
+    game_objects = [real_miner, other_miner, miner_wife]
     counter = 0
     while counter < 50:
         print("Game tick {}".format(counter))
