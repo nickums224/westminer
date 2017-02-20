@@ -53,6 +53,12 @@ class Miner(BaseGameEntity):
         self.current_state = new_state
         self.current_state.enter(self)
 
+
+
+
+
+
+
     def pockets_full(self):
         if self.gold_carried > self.max_nuggets:
             return True
@@ -67,6 +73,12 @@ class Miner(BaseGameEntity):
 
     def is_tired(self):
         if self.fatigue > 10:
+            return True
+        else:
+            return False
+
+    def dying(self):
+        if self.health <= 0:
             return True
         else:
             return False
@@ -106,8 +118,14 @@ class Wife(BaseGameEntity):
         else:
             return False
 
+    def dying(miner):
+        if miner.health <= 0:
+            return True
+        else:
+            return False
+
 if __name__ == '__main__':
-    real_miner = Miner('Bob',
+    miner = Miner('Bob',
                        states.enter_mine_and_dig_for_nugget,
                        'home',
                        0,
@@ -116,6 +134,7 @@ if __name__ == '__main__':
                        0,
                        "lanky",
                        items.small_pickax)
+
     other_miner = Miner('Sam',
                         states.enter_mine_and_dig_for_nugget,
                         'home',
@@ -134,14 +153,12 @@ if __name__ == '__main__':
                       0,
                       0)
 
-    game_objects = [real_miner, other_miner, miner_wife]
+
+    game_objects = [miner, other_miner, miner_wife]
     counter = 0
     while counter < 50:
         print("Game tick {}".format(counter))
         for obj in game_objects:
-            if obj.health <=0:
-                print("Miner {}: Imma dead as a doorknob!".format(obj.name))
-                break
             obj.update()
         time.sleep(0.5)
         counter += 1

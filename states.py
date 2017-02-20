@@ -22,6 +22,7 @@ class EnterMineAndDigForNugget(State):
             miner.location = 'goldmine'
 
     def execute(self, miner):
+
         r = random.random() - miner.pickax.luck
         if r < 0.25:
             miner.gold_carried += 4
@@ -44,17 +45,21 @@ class EnterMineAndDigForNugget(State):
             miner.thirst += 1
             print("Miner {}: NO NUGGETS!? I'm gonna be here all day at this rate".format(miner.name))
 
+        if miner.fatigue >= 1:
+            miner.health -= 2
+
+            print("Miner {}: Loosing health...")
+
         if miner.pockets_full():
             miner.change_state(visit_bank_and_deposit_gold)
         elif miner.thirsty():
             miner.change_state(quench_thirst)
-
-        if miner.thirst >= 2:
-            miner.health - 30
+        elif miner.dying():
+            miner.change_state(death_state)
 
 
     def exit(self, miner):
-        print("Miner {}: Ah'm leavin' the gold mine with mah pockets full o'sweet gold".format(miner.name))
+            print("Miner {}: Ah'm leavin' the gold mine with mah pockets full o'sweet gold".format(miner.name))
 
 
 class VisitBankAndDepositGold(State):
@@ -67,7 +72,7 @@ class VisitBankAndDepositGold(State):
         miner.gold_bank += miner.gold_carried
         miner.gold_carried = 0
         print("Miner {}: Depositin' gold. Total savings now: {}".format(miner.name,
-                                                                       miner.gold_bank))
+                                                                        miner.gold_bank))
         if miner.gold_bank > 10:
             print("Miner {}: Woohoo! Rich enough for now. Back home to mah li'l lady".format(miner.name))
             miner.change_state(go_home_and_sleep_till_rested)
@@ -111,7 +116,7 @@ class GoHomeAndSleepTillRested(State):
 
     def exit(self, miner):
         print("Miner {}: Good mornin'! Another day, another nugget!".format(miner.name))
-        
+
 
 class QuenchThirst(State):
     def enter(self, miner):
@@ -165,6 +170,7 @@ class Jail(State):
         print("Miner {}: I'm bustin' outta this joint!".format(miner.name))
         print("Miner {}: Gotta Get back to it!".format(miner.name))
 
+
 class GoShopping(State):
     def enter(self, miner):
         if miner.location != "shop":
@@ -194,6 +200,7 @@ class GoShopping(State):
     def exit(self, miner):
         print("Miner {}: Can't wait to try out my new {}".format(miner.name, miner.pickax.name))
 
+
 class WakeUpAndMakeCoffee(State):
     def enter(self, wife):
         if wife.location != 'home':
@@ -202,7 +209,7 @@ class WakeUpAndMakeCoffee(State):
 
     def execute(self, wife):
         wife.fatigue += 1
-        print ("{}: Coffee keeps me goin' fer my chores.".format(wife.name))
+        print("{}: Coffee keeps me goin' fer my chores.".format(wife.name))
         if wife.coffee_made():
             wife.wife_change_state(wash_bfast_dishes)
         if wife.tired():
@@ -211,15 +218,15 @@ class WakeUpAndMakeCoffee(State):
     def exit(self, wife):
         print("{}: That was some delicious breakfast!".format(wife.name))
 
-class WashBfastDishes(State):
 
+class WashBfastDishes(State):
     def enter(self, wife):
         print("{}: I tell ya, I made a mess!".format(wife.name))
         wife.location = 'home'
 
     def execute(self, wife):
         wife.fatigue += 1
-        print ("{}: I don't mind washin' these here dishes, anything for my fella.".format(wife.name))
+        print("{}: I don't mind washin' these here dishes, anything for my fella.".format(wife.name))
         if wife.dishes_washed():
             wife.wife_change_state(iron_shirts)
         if wife.fatigue():
@@ -228,8 +235,8 @@ class WashBfastDishes(State):
     def exit(self, wife):
         print("{}: Ah, ain't nothin' better than a clean kitchen".format(wife.name))
 
-class WifeNap(State):
 
+class WifeNap(State):
     def enter(self, wife):
         print("{}: Whew, keepin' up a house is hard work!".format(wife.name))
         wife.location = 'home'
@@ -243,6 +250,21 @@ class WifeNap(State):
     def exit(self, wife):
         pass
 
+
+class DeathState(State):
+    def enter(self, miner):
+        miner.location = 'miner heaven'
+
+
+    def execute(self, miner):
+        while miner.health <= 0:
+            print ("Miner {}: I done messed up too much and slipped on my pickax. IM DEAD...".format(miner.name))
+            break
+
+    def exit(self, miner):
+        pass
+
+
 enter_mine_and_dig_for_nugget = EnterMineAndDigForNugget()
 visit_bank_and_deposit_gold = VisitBankAndDepositGold()
 go_home_and_sleep_till_rested = GoHomeAndSleepTillRested()
@@ -252,3 +274,4 @@ go_shopping = GoShopping()
 wake_up_and_make_coffee = WakeUpAndMakeCoffee()
 wash_bfast_dishes = WashBfastDishes()
 wife_nap = WifeNap()
+death_state = DeathState()
